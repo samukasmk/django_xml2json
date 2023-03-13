@@ -1,10 +1,15 @@
 <html>
     <head></head>
     <body>
-        <p>
-            Modify this page to include a form where users can submit an XML file.
-            When they click on the submit button, the XML file should be converted into JSON and
-            returned to the user.
-        </p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                <label>XML to JSON Conversor: </label><br/>
+                <input type="file" name="file" id="id_file"/>
+            </p>
+            <p>
+                <input type="submit"/>
+            </p>
+        </form>
     </body>
 </html>
