@@ -209,3 +209,32 @@ class XMLConversionTestCase(TestCase):
                 "parse_status": "error",
                 "parse_message": "mismatched tag: line 5, column 2"
             })
+
+    # Cases test: missing-root.xml
+    def test_logic_xml2dict_convert_missing_root_document(self):
+        with (TEST_DIR / Path('missing-root.xml')).open() as fp:
+            with self.assertRaises(InvalidXMLSyntax) as context:
+                xml_to_dict(fp.read())
+            self.assertTrue('no element found: line 2, column 0' in context.exception)
+
+    def test_connected_convert_missing_root_document(self):
+        with (TEST_DIR / Path('missing-root.xml')).open() as fp:
+            response = self.client.post('/connected/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "no element found: line 2, column 0"
+            })
+
+    def test_api_convert_missing_root_document(self):
+        with (TEST_DIR / Path('missing-root.xml')).open() as fp:
+            response = self.client.post('/api/converter/convert/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "no element found: line 2, column 0"
+            })
