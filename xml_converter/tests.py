@@ -238,3 +238,32 @@ class XMLConversionTestCase(TestCase):
                 "parse_status": "error",
                 "parse_message": "no element found: line 2, column 0"
             })
+
+    # Cases test: zero-bytes.xml
+    def test_logic_xml2dict_convert_zero_bytes_document(self):
+        with (TEST_DIR / Path('zero-bytes.xml')).open() as fp:
+            with self.assertRaises(InvalidXMLSyntax) as context:
+                xml_to_dict(fp.read())
+            self.assertTrue('no element found: line 1, column 0' in context.exception)
+
+    def test_connected_convert_zero_bytes_document(self):
+        with (TEST_DIR / Path('zero-bytes.xml')).open() as fp:
+            response = self.client.post('/connected/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "no element found: line 1, column 0"
+            })
+
+    def test_api_convert_zero_bytes_document(self):
+        with (TEST_DIR / Path('zero-bytes.xml')).open() as fp:
+            response = self.client.post('/api/converter/convert/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "no element found: line 1, column 0"
+            })
