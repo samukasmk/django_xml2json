@@ -1,6 +1,8 @@
+import os
 import importlib
 from pathlib import Path
 
+import django
 from django.test import TestCase, Client
 
 from xml_converter.logic import xml_to_dict
@@ -9,8 +11,18 @@ from xml_converter.exceptions import InvalidXMLSyntax
 TEST_DIR = Path(__file__).parent / Path('test_files')
 
 
-class XMLConversionTestCase(TestCase):
+class DjangoTestCase(TestCase):
+    """ Additional test case to run specific tests with command python -m unittest -k ..."""
+
     def setUp(self):
+        django.setup()
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'exercise.tests_settings'
+
+
+class XMLConversionTestCase(DjangoTestCase):
+
+    def setUp(self):
+        super().setUp()
         self.client = Client()
 
     # Cases test: empty.xml
