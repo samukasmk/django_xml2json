@@ -281,10 +281,10 @@ class XMLConversionTestCase(DjangoTestCase):
             response = self.client.post('/connected/', {
                 'file': fp,
             })
-            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {
                 "errors": {
-                    "parse_xml": ["no element found: line 1, column 0"]
+                    "file": ["The submitted file is empty."]
                 }
             })
 

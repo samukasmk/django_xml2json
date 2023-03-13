@@ -17,13 +17,15 @@ class ConverterViewSet(ViewSet):
     def convert(self, request, **kwargs):
         serializer = XMLFileSerializer(data=request.data)
         if serializer.is_valid():
-            xml_content = serializer.validated_data['file'].read()
             try:
+                # parsing xml content
+                xml_content = serializer.validated_data['file'].read()
                 response_dict = xml_to_dict(xml_content)
                 return Response(response_dict, status=status.HTTP_200_OK)
             except ParseError as exc:
+                # failed on parsing file
                 parser_reason = str(exc)
                 response_dict = {"errors": {"parse_xml": [parser_reason]}}
                 return Response(response_dict, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
+        # invalid form fields
         return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
