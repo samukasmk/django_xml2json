@@ -279,3 +279,25 @@ class XMLConversionTestCase(DjangoTestCase):
                 "parse_status": "error",
                 "parse_message": "no element found: line 1, column 0"
             })
+
+    # Cases test: none document field value
+    def test_connected_none_document_field_value(self):
+        response = self.client.post('/api/converter/convert/', {
+            'file': None,
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_convert_none_document_field_value(self):
+        response = self.client.post('/api/converter/convert/', {
+            'file': None,
+        })
+        self.assertEqual(response.status_code, 400)
+
+    # Cases test: missing document field
+    def test_connected_missing_document_field(self):
+        response = self.client.post('/api/converter/convert/')
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_convert_missing_document_field(self):
+        response = self.client.post('/api/converter/convert/')
+        self.assertEqual(response.status_code, 400)
