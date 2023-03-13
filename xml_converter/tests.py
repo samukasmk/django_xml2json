@@ -4,6 +4,7 @@ from pathlib import Path
 from django.test import TestCase, Client
 
 from xml_converter.logic import xml_to_dict
+from xml_converter.exceptions import InvalidXMLSyntax
 
 TEST_DIR = Path(__file__).parent / Path('test_files')
 
@@ -178,4 +179,33 @@ class XMLConversionTestCase(TestCase):
                         }
                     }
                 ]
+            })
+
+    # Cases test: invalid-syntax.xml
+    def test_logic_xml2dict_convert_invalid_syntax_document(self):
+        with (TEST_DIR / Path('invalid-syntax.xml')).open() as fp:
+            with self.assertRaises(InvalidXMLSyntax) as context:
+                xml_to_dict(fp.read())
+            self.assertTrue('mismatched tag: line 5, column 2' in context.exception)
+
+    def test_connected_convert_invalid_syntax_document(self):
+        with (TEST_DIR / Path('invalid-syntax.xml')).open() as fp:
+            response = self.client.post('/connected/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "mismatched tag: line 5, column 2"
+            })
+
+    def test_api_convert_invalid_syntax_document(self):
+        with (TEST_DIR / Path('invalid-syntax.xml')).open() as fp:
+            response = self.client.post('/api/converter/convert/', {
+                'file': fp,
+            })
+            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.json(), {
+                "parse_status": "error",
+                "parse_message": "mismatched tag: line 5, column 2"
             })
