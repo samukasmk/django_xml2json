@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Root>
+    <Address>
+        <StreetLine1>123 Main St.</StreetLine1>
+        <StreetLine2>Suite 400</StreetLine2>
+        <City>San Francisco</City>
+        <State>CA</State>
+        <PostCode>94103</PostCode>
+    </Address>
+    <Address>
+        <StreetLine1>400 Market St.</StreetLine1>
+        <City>San Francisco</City>
+        <State>CA</State>
+        <PostCode>94108</PostCode>
+    </Address>
+</Root>
