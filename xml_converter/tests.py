@@ -221,8 +221,9 @@ class XMLConversionTestCase(DjangoTestCase):
             })
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "mismatched tag: line 5, column 2"
+                "errors": {
+                    "parse_xml": ["mismatched tag: line 5, column 2"]
+                }
             })
 
     def test_api_convert_invalid_syntax_document(self):
@@ -232,8 +233,9 @@ class XMLConversionTestCase(DjangoTestCase):
             })
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "mismatched tag: line 5, column 2"
+                "errors": {
+                    "parse_xml": ["mismatched tag: line 5, column 2"]
+                }
             })
 
     # Cases test: missing-root.xml
@@ -250,8 +252,9 @@ class XMLConversionTestCase(DjangoTestCase):
             })
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "no element found: line 2, column 0"
+                "errors": {
+                    "parse_xml": ["no element found: line 2, column 0"]
+                }
             })
 
     def test_api_convert_missing_root_document(self):
@@ -261,8 +264,9 @@ class XMLConversionTestCase(DjangoTestCase):
             })
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "no element found: line 2, column 0"
+                "errors": {
+                    "parse_xml": ["no element found: line 2, column 0"]
+                }
             })
 
     # Cases test: zero-bytes.xml
@@ -279,8 +283,9 @@ class XMLConversionTestCase(DjangoTestCase):
             })
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "no element found: line 1, column 0"
+                "errors": {
+                    "parse_xml": ["no element found: line 1, column 0"]
+                }
             })
 
     def test_api_convert_zero_bytes_document(self):
@@ -288,10 +293,11 @@ class XMLConversionTestCase(DjangoTestCase):
             response = self.client.post('/api/converter/convert/', {
                 'file': fp,
             })
-            self.assertEqual(response.status_code, 422)
+            self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {
-                "parse_status": "error",
-                "parse_message": "no element found: line 1, column 0"
+                "errors": {
+                    "file": ["The submitted file is empty."]
+                }
             })
 
     # Cases test: empty document field value
