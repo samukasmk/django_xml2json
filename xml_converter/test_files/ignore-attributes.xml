@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Root>
+  <MyDocument with="an attribute">
+    <Has>an element</Has>
+    <And>
+      <SecondElement with="second attribute">
+        as well
+      </SecondElement>
+    </And>
+  </MyDocument>
+</Root>
