@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Root>
+  <MyBrokenDocument with="an attribute">
+    <Has>an element</Has>
+</Root>
