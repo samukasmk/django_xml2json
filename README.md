@@ -1,9 +1,13 @@
 # django_xml2json
-A sample Django application of an xml to json converter
+An online XML to JSON conversion and validation tool
+
+## Live demo 🔍
+
+You can see on live demo here: [http://smksamuka.pythonanywhere.com/](http://smksamuka.pythonanywhere.com/)
 
 ![.docs/django_xml2json-use.gif](.docs/django_xml2json-use.gif ) 
 
-## Install
+## Install 🧑🏽‍💻
 Execute commands on terminal:
 ```sh
 # clone this repository
@@ -25,12 +29,12 @@ pip install -r requirements.txt
 
 ![.docs/django_xml2json-install.gif](.docs/django_xml2json-install.gif)
 
-# Using web app
-Access the local URL: [http://127.0.0.1:8000/connected/]( http://127.0.0.1:8000/connected/)
+## Using web app 📃
+Access the URL from your local: [http://127.0.0.1:8000/connected/]( http://127.0.0.1:8000/connected/)
 
 And enjoy it! 🎉
 
-# Parsing by Rest Framework API
+## Parsing by Rest Framework API 🌐
 
 Create a sample file:
 ```sh
@@ -64,7 +68,7 @@ curl -F file=@address.json http://127.0.0.1:8000/api/converter/convert/
 ```
 
 
-## Testing
+## Testing 🛠️
 You can run tests my `django manage` command:
 
 ```sh
