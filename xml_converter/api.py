@@ -25,7 +25,7 @@ class ConverterViewSet(ViewSet):
             except ParseError as exc:
                 # failed on parsing file
                 parser_reason = str(exc)
-                response_dict = {"errors": {"parse_xml": [parser_reason]}}
+                response_dict = {"errors": {"xml_parser": [parser_reason]}}
                 return Response(response_dict, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         # invalid form fields
         return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

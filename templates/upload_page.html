@@ -29,7 +29,7 @@
                 <div>
                     <div class="mb-3">
                       <label for="parsedJSONContent" class="form-label">Parsed JSON content</label>
-                      <textarea readonly class="form-control" id="parsedJSONContent" rows="16"></textarea>
+                      <textarea readonly disabled class="form-control" id="parsedJSONContent" rows="16"></textarea>
                     </div>
                     <button onclick="copyToClipboard()" type="button" class="btn btn-info">Copy to clipboard</button>
                 </div>
@@ -56,10 +56,16 @@
 
         <script>
             function postXMLFile() {
+                // clean text on retry time to loaded screen
+                $("#parsedJSONContent").html('').prop('disabled', true);
+
+                // validation for file field
                 if ($('#id_file')[0].files.length === 0) {
                     showModalMessage('Upload validation', 'Please select a file to upload!');
                     return
                 }
+
+                // post form
                 let formData = new FormData($("#uploadXMLFile")[0]);
                 let ajaxUrl = "/connected/";
                 $.post({
@@ -71,7 +77,7 @@
                     cache: false
                 }).done(function(response){
                     let jsonResponse = JSON.stringify(response, null, 4);
-                    $("#parsedJSONContent").html(jsonResponse);
+                    $("#parsedJSONContent").html(jsonResponse).prop('disabled', false);
                 }).fail(function(response, status){
                     let modalTitle = 'Failed to parse XML file';
                     let errorTitle = buildErrorTitle(response.status);

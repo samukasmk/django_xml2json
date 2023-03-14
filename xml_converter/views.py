@@ -25,7 +25,7 @@ def upload_page(request):
         except ParseError as exc:
             # failed on parsing file
             parser_reason = str(exc)
-            response_dict = {"errors": {"parse_xml": [parser_reason]}}
+            response_dict = {"errors": {"xml_parser": [parser_reason]}}
             return JsonResponse(response_dict, status=422)
 
     return render(request, 'upload_page.html', {'form': form})
