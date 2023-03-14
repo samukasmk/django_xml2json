@@ -222,7 +222,7 @@ class XMLConversionTestCase(DjangoTestCase):
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
                 "errors": {
-                    "parse_xml": ["mismatched tag: line 5, column 2"]
+                    "xml_parser": ["mismatched tag: line 5, column 2"]
                 }
             })
 
@@ -234,7 +234,7 @@ class XMLConversionTestCase(DjangoTestCase):
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
                 "errors": {
-                    "parse_xml": ["mismatched tag: line 5, column 2"]
+                    "xml_parser": ["mismatched tag: line 5, column 2"]
                 }
             })
 
@@ -253,7 +253,7 @@ class XMLConversionTestCase(DjangoTestCase):
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
                 "errors": {
-                    "parse_xml": ["no element found: line 2, column 0"]
+                    "xml_parser": ["no element found: line 2, column 0"]
                 }
             })
 
@@ -265,7 +265,7 @@ class XMLConversionTestCase(DjangoTestCase):
             self.assertEqual(response.status_code, 422)
             self.assertEqual(response.json(), {
                 "errors": {
-                    "parse_xml": ["no element found: line 2, column 0"]
+                    "xml_parser": ["no element found: line 2, column 0"]
                 }
             })
 

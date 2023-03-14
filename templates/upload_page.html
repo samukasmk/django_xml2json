@@ -1,10 +1,129 @@
 <html>
-    <head></head>
+    <head>
+        <title>XML to JSON Converter</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    </head>
     <body>
-        <p>
-            Modify this page to include a form where users can submit an XML file.
-            When they click on the submit button, the XML file should be converted into JSON and
-            returned to the user.
-        </p>
+        <div class="container-fluid p-5 bg-primary text-white text-center">
+            <h1>XML to JSON</h1>
+            <p>Converting you of XML files in JSON content</p>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+
+            <form method="post" enctype="multipart/form-data" id="uploadXMLFile">
+                {% csrf_token %}
+                <div>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">XML File to convert</label>
+                        <input class="form-control" type="file" name="file" id="id_file">
+                    </div>
+                    <button onclick="postXMLFile()" type="button" class="btn btn-primary mb-3">Convert to JSON</button>
+                </div>
+
+                <div>
+                    <div class="mb-3">
+                      <label for="parsedJSONContent" class="form-label">Parsed JSON content</label>
+                      <textarea readonly disabled class="form-control" id="parsedJSONContent" rows="16"></textarea>
+                    </div>
+                    <button onclick="copyToClipboard()" type="button" class="btn btn-info">Copy to clipboard</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modalMessage" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="modalMessageTitle" class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalMessageBodyHeader"></p>
+                        <p id="modalMessageBodyContent"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function postXMLFile() {
+                // clean text on retry time to loaded screen
+                $("#parsedJSONContent").html('').prop('disabled', true);
+
+                // validation for file field
+                if ($('#id_file')[0].files.length === 0) {
+                    showModalMessage('Upload validation', 'Please select a file to upload!');
+                    return
+                }
+
+                // post form
+                let formData = new FormData($("#uploadXMLFile")[0]);
+                let ajaxUrl = "/connected/";
+                $.post({
+                    url: ajaxUrl,
+                    data: formData,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false
+                }).done(function(response){
+                    let jsonResponse = JSON.stringify(response, null, 4);
+                    $("#parsedJSONContent").html(jsonResponse).prop('disabled', false);
+                }).fail(function(response, status){
+                    let modalTitle = 'Failed to parse XML file';
+                    let errorTitle = buildErrorTitle(response.status);
+                    let errorReason = buildErrorReason(response.responseJSON.errors);
+                    showModalMessage(modalTitle, errorTitle, errorReason);
+                });
+            };
+
+            function buildErrorTitle(responseStatus) {
+                let messageHeader = '';
+                if (responseStatus === 400) {
+                    messageHeader = 'Invalid file format';
+                } else if (responseStatus === 422) {
+                    messageHeader = 'Invalid XML syntax';
+                } else {
+                    messageHeader = `Unknown failure (HTTP Status: ${response.status})`;
+                };
+                return `<b>Error:</b> ${messageHeader}`;
+            };
+
+            function buildErrorReason(responseErrors) {
+                let reasonMessage = '';
+                for (const errorType in responseErrors) {
+                    reasonMessage += `<b>Reason:</b>`;
+                    reasonMessage += '<ul>';
+                    for (errorValue of responseErrors[errorType]) {
+                        reasonMessage += `<li><b>(${errorType.replace('_', ' ')}):</b> ${errorValue}</li>`;
+                    };
+                    reasonMessage += '</ul>'
+                };
+                return reasonMessage;
+            };
+
+            function showModalMessage(modalTitle, modalBodyHeader, modalBodyContent) {
+                $('#modalMessage').modal('show');
+                $("#modalMessageTitle").html(modalTitle);
+                $("#modalMessageBodyHeader").html(modalBodyHeader);
+                $("#modalMessageBodyContent").html(modalBodyContent);
+            };
+
+            function copyToClipboard() {
+                const element = document.querySelector('#parsedJSONContent');
+                element.select();
+                element.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+            };
+        </script>
     </body>
 </html>
