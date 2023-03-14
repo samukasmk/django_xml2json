@@ -44,9 +44,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p id="modalMessageBodyUp"></p>
-                        <p id="modalMessageBodyCenter"></p>
-                        <p id="modalMessageBodyDown"></p>
+                        <p id="modalMessageBodyHeader"></p>
+                        <p id="modalMessageBodyContent"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -106,12 +105,11 @@
                 return reasonMessage;
             };
 
-            function showModalMessage(modalTitle, modalBodyUp, modalBodyCenter, modalBodyDown) {
+            function showModalMessage(modalTitle, modalBodyHeader, modalBodyContent) {
                 $('#modalMessage').modal('show');
                 $("#modalMessageTitle").html(modalTitle);
-                $("#modalMessageBodyUp").html(modalBodyUp);
-                $("#modalMessageBodyCenter").html(modalBodyCenter);
-                $("#modalMessageBodyDown").html(modalBodyDown);
+                $("#modalMessageBodyHeader").html(modalBodyHeader);
+                $("#modalMessageBodyContent").html(modalBodyContent);
             };
 
             function copyToClipboard() {
