@@ -36,30 +36,82 @@
             </form>
         </div>
 
+        <div id="modalMessage" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="modalMessageTitle" class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalMessageBodyUp"></p>
+                        <p id="modalMessageBodyCenter"></p>
+                        <p id="modalMessageBodyDown"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
-            var a = 0;
             function postXMLFile() {
                 if ($('#id_file')[0].files.length === 0) {
-                    alert('Please select a file to upload!');
+                    showModalMessage('Upload validation', 'Please select a file to upload!');
                     return
                 }
-
-                var formData = new FormData($("#uploadXMLFile")[0]);
-                var ajaxUrl = "/connected/";
-
+                let formData = new FormData($("#uploadXMLFile")[0]);
+                let ajaxUrl = "/connected/";
                 $.post({
-                    url : ajaxUrl,
-                    data : formData,
+                    url: ajaxUrl,
+                    data: formData,
                     enctype: 'multipart/form-data',
                     processData: false,
                     contentType: false,
                     cache: false
                 }).done(function(response){
-                    jsonResponse = JSON.stringify(response, null, 4);
-                    $( "#parsedJSONContent" ).html(jsonResponse);
-                }).fail(function(response){
-                    $( "#parsedJSONContent" ).html(response.responseText);
+                    let jsonResponse = JSON.stringify(response, null, 4);
+                    $("#parsedJSONContent").html(jsonResponse);
+                }).fail(function(response, status){
+                    let modalTitle = 'Failed to parse XML file';
+                    let errorTitle = buildErrorTitle(response.status);
+                    let errorReason = buildErrorReason(response.responseJSON.errors);
+                    showModalMessage(modalTitle, errorTitle, errorReason);
                 });
+            };
+
+            function buildErrorTitle(responseStatus) {
+                let messageHeader = '';
+                if (responseStatus === 400) {
+                    messageHeader = 'Invalid file format';
+                } else if (responseStatus === 422) {
+                    messageHeader = 'Invalid XML syntax';
+                } else {
+                    messageHeader = `Unknown failure (HTTP Status: ${response.status})`;
+                };
+                return `<b>Error:</b> ${messageHeader}`;
+            };
+
+            function buildErrorReason(responseErrors) {
+                let reasonMessage = '';
+                for (const errorType in responseErrors) {
+                    reasonMessage += `<b>Reason:</b>`;
+                    reasonMessage += '<ul>';
+                    for (errorValue of responseErrors[errorType]) {
+                        reasonMessage += `<li><b>(${errorType.replace('_', ' ')}):</b> ${errorValue}</li>`;
+                    };
+                    reasonMessage += '</ul>'
+                };
+                return reasonMessage;
+            };
+
+            function showModalMessage(modalTitle, modalBodyUp, modalBodyCenter, modalBodyDown) {
+                $('#modalMessage').modal('show');
+                $("#modalMessageTitle").html(modalTitle);
+                $("#modalMessageBodyUp").html(modalBodyUp);
+                $("#modalMessageBodyCenter").html(modalBodyCenter);
+                $("#modalMessageBodyDown").html(modalBodyDown);
             };
 
             function copyToClipboard() {
